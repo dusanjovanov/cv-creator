@@ -18,20 +18,102 @@ const TextField = ({ label, field }) => {
   );
 };
 
+const NumberField = ({ label, field }) => {
+  return (
+    <div>
+      <label className="block font-semibold">{label}</label>
+      <input
+        className="border p-1 w-full"
+        type="number"
+        value={field.value ?? ""}
+        onChange={e => field.onChange(e.target.value)}
+        onBlur={field.onBlur}
+      />
+    </div>
+  );
+};
+
+const Education = ({ field }) => {
+  return (
+    <fieldset className="border px-2 py-1">
+      <legend className="font-bold uppercase  text-green-900">Education</legend>
+      {field.value?.map((e, i) => {
+        return (
+          <div className=" border-b-2 pb-2 border-black">
+            <TextField
+              label="School"
+              field={{
+                value: e.school,
+                onChange: value => {
+                  field.onChange(
+                    field.value.map((e, j) => {
+                      if (i === j) {
+                        return {
+                          ...e,
+                          school: value,
+                        };
+                      }
+                      return e;
+                    })
+                  );
+                },
+              }}
+            />
+            <TextField
+              label="Degree"
+              field={{
+                value: e.degree,
+                onChange: value => {
+                  field.onChange(
+                    field.value.map((e, j) => {
+                      if (i === j) {
+                        return {
+                          ...e,
+                          degree: value,
+                        };
+                      }
+                      return e;
+                    })
+                  );
+                },
+              }}
+            />
+          </div>
+        );
+      })}
+      <button className="text-3xl">
+        <i className="las la-plus-circle"></i>
+      </button>
+    </fieldset>
+  );
+};
+
 class MyForm {
+  bannerHeight = Field(NumberField);
+  imageSize = Field(NumberField);
   name = Field(TextField);
   imageUrl = Field(TextField);
   phone = Field(TextField);
   email = Field(TextField);
   address = Field(TextField);
   dob = Field(TextField);
+  education = Field(Education);
   init = () => {
     this.name.value = "Some Person";
     this.imageUrl.value = "https://github.com/dusanjovanov.png";
     this.phone.value = "+1 555 123 123";
     this.email.value = "example@example.com";
-    this.address.value = "123 Main st";
+    this.address.value = "123 Main st.";
     this.dob.value = "23.01.1984.";
+    this.education.value = [
+      {
+        school: "Some school",
+        degree: "Bachelor of applied sciences",
+        period: "29.1.2001 - 13.2.2005",
+      },
+    ];
+    this.bannerHeight.value = 100;
+    this.imageSize.value = 120;
   };
   update = () => {
     this.name.props = {
@@ -51,6 +133,12 @@ class MyForm {
     };
     this.dob.props = {
       label: "Date of birth",
+    };
+    this.bannerHeight.props = {
+      label: "Banner height",
+    };
+    this.imageSize.props = {
+      label: "Image size",
     };
   };
 }
@@ -93,35 +181,45 @@ const Right = () => {
   const { fields } = useFormContext();
 
   return (
-    <div className="px-2 py-1">
-      {fields.name}
-      {fields.imageUrl}
-      {fields.phone}
-      {fields.email}
-      {fields.address}
-      {fields.dob}
+    <div className="form px-2 py-1 overflow-y-auto">
+      <style jsx>{`
+        .form {
+          height: calc(100vh);
+        }
+      `}</style>
+      <fieldset className="border px-2 py-1 mb-2">
+        <legend className="font-bold uppercase text-green-900">Bio</legend>
+        {fields.name}
+        {fields.imageUrl}
+        {fields.phone}
+        {fields.email}
+        {fields.address}
+        {fields.dob}
+      </fieldset>
+      {fields.bannerHeight}
+      {fields.imageSize}
+      {fields.education}
     </div>
   );
 };
 
 const Template = () => {
   const { values } = useSubscribe();
-  const color = "white";
   return (
     <div className="template">
       <style jsx>{`
         .template {
           font-size: 14px;
         }
-        .banner {
-          height: 120px;
+        .head {
+          height: ${values.bannerHeight}px;
           color: white;
           font-size: 14px;
         }
         .image-container {
-          width: 150px;
-          height: 150px;
-          margin-top: -75px;
+          width: ${values.imageSize}px;
+          height: ${values.imageSize}px;
+          margin-top: -${values.imageSize / 2}px;
           border-radius: 100%;
           overflow: hidden;
         }
@@ -134,8 +232,8 @@ const Template = () => {
           font-family: Lato;
         }
       `}</style>
-      <div className="banner bg-green-800 px-2 py-1 flex">
-        <h1 className="name text-2xl font-bold">{values.name}</h1>
+      <div className="head bg-green-800 px-2 py-1 flex">
+        <h1 className="name text-xl">{values.name}</h1>
         <div className="ml-auto">
           <div className="flex items-center justify-end">
             <i className="lar la-envelope mr-1"></i>
@@ -151,11 +249,27 @@ const Template = () => {
           </div>
         </div>
       </div>
-      <div className="flex">
-        <div className="image-container ml-2">
-          <img src={values.imageUrl} />
+      <div className="body px-2 py-1">
+        <div className="flex mb-1">
+          <div className="image-container border border-green-800">
+            <img src={values.imageUrl} />
+          </div>
+          <div className="ml-auto">Date of birth: {values.dob}</div>
         </div>
-        <div className="ml-auto">Date of birth: {values.dob}</div>
+        <div className="education">
+          <label className="text-xl font-semibold border-b-2 block">
+            Education
+          </label>
+          {values.education?.map(e => {
+            return (
+              <div>
+                <div className="font-semibold">{e.school}</div>
+                <div className="">{e.degree}</div>
+                <div className=" text-gray-600">{e.period}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
