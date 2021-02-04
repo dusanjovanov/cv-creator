@@ -11,8 +11,23 @@ const TextField = ({ label, field }) => {
         className="border p-1 w-full"
         type="text"
         value={field.value ?? ""}
-        onChange={e => field.onChange(e.target.value)}
+        onChange={(e) => field.onChange(e.target.value)}
         onBlur={field.onBlur}
+      />
+    </div>
+  );
+};
+
+const TextAreaField = ({ label, field }) => {
+  return (
+    <div>
+      <label className="block font-semibold">{label}</label>
+      <textarea
+        className="border p-1 w-full"
+        value={field.value ?? ""}
+        onChange={(e) => field.onChange(e.target.value)}
+        onBlur={field.onBlur}
+        rows={7}
       />
     </div>
   );
@@ -26,7 +41,7 @@ const NumberField = ({ label, field }) => {
         className="border p-1 w-full"
         type="number"
         value={field.value ?? ""}
-        onChange={e => field.onChange(e.target.value)}
+        onChange={(e) => field.onChange(e.target.value)}
         onBlur={field.onBlur}
       />
     </div>
@@ -36,52 +51,223 @@ const NumberField = ({ label, field }) => {
 const Education = ({ field }) => {
   return (
     <fieldset className="border px-2 py-1">
-      <legend className="font-bold uppercase  text-green-900">Education</legend>
+      <legend className="font-bold uppercase text-xl text-green-900">
+        Education
+      </legend>
       {field.value?.map((e, i) => {
         return (
-          <div className=" border-b-2 pb-2 border-black">
-            <TextField
-              label="School"
-              field={{
-                value: e.school,
-                onChange: value => {
-                  field.onChange(
-                    field.value.map((e, j) => {
-                      if (i === j) {
-                        return {
-                          ...e,
-                          school: value,
-                        };
-                      }
-                      return e;
-                    })
-                  );
-                },
+          <div className="flex border-b-2 pb-2 border-black">
+            <div className="flex-1">
+              <TextField
+                label="School"
+                field={{
+                  value: e.school,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            school: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+              <TextField
+                label="Degree"
+                field={{
+                  value: e.degree,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            degree: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+              <TextField
+                label="Period"
+                field={{
+                  value: e.period,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            period: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+              <TextAreaField
+                label="Description"
+                field={{
+                  value: e.description,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            description: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+            </div>
+            <button
+              className="text-3xl"
+              onClick={() => {
+                field.onChange(field.value.filter((e, j) => j !== i));
               }}
-            />
-            <TextField
-              label="Degree"
-              field={{
-                value: e.degree,
-                onChange: value => {
-                  field.onChange(
-                    field.value.map((e, j) => {
-                      if (i === j) {
-                        return {
-                          ...e,
-                          degree: value,
-                        };
-                      }
-                      return e;
-                    })
-                  );
-                },
-              }}
-            />
+            >
+              <i className="las la-minus-circle"></i>
+            </button>
           </div>
         );
       })}
-      <button className="text-3xl">
+      <button
+        className="text-3xl"
+        onClick={() => {
+          field.onChange([
+            ...field.value,
+            { school: "", degree: "", period: "", description: "" },
+          ]);
+        }}
+      >
+        <i className="las la-plus-circle"></i>
+      </button>
+    </fieldset>
+  );
+};
+
+const WorkHistory = ({ field }) => {
+  return (
+    <fieldset className="border px-2 py-1">
+      <legend className="font-bold uppercase text-xl text-green-900">
+        Work history
+      </legend>
+      {field.value?.map((e, i) => {
+        return (
+          <div className="flex border-b-2 pb-2 border-black">
+            <div className="flex-1">
+              <TextField
+                label="Company"
+                field={{
+                  value: e.company,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            company: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+              <TextField
+                label="Position"
+                field={{
+                  value: e.position,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            position: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+              <TextField
+                label="Period"
+                field={{
+                  value: e.period,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            period: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+              <TextAreaField
+                label="Description"
+                field={{
+                  value: e.description,
+                  onChange: (value) => {
+                    field.onChange(
+                      field.value.map((e, j) => {
+                        if (i === j) {
+                          return {
+                            ...e,
+                            description: value,
+                          };
+                        }
+                        return e;
+                      })
+                    );
+                  },
+                }}
+              />
+            </div>
+            <button
+              className="text-3xl"
+              onClick={() => {
+                field.onChange(field.value.filter((e, j) => j !== i));
+              }}
+            >
+              <i className="las la-minus-circle"></i>
+            </button>
+          </div>
+        );
+      })}
+      <button
+        className="text-3xl"
+        onClick={() => {
+          field.onChange([
+            ...field.value,
+            { company: "", position: "", period: "", description: "" },
+          ]);
+        }}
+      >
         <i className="las la-plus-circle"></i>
       </button>
     </fieldset>
@@ -98,6 +284,8 @@ class MyForm {
   address = Field(TextField);
   dob = Field(TextField);
   education = Field(Education);
+  workHistory = Field(WorkHistory);
+
   init = () => {
     this.name.value = "Some Person";
     this.imageUrl.value = "https://github.com/dusanjovanov.png";
@@ -110,6 +298,15 @@ class MyForm {
         school: "Some school",
         degree: "Bachelor of applied sciences",
         period: "29.1.2001 - 13.2.2005",
+        description: "asdasddaasddas",
+      },
+    ];
+    this.workHistory.value = [
+      {
+        company: "Some comapny",
+        position: "Frontend developer",
+        period: "29.1.2001 - 13.2.2005",
+        description: "asdasddaasddas",
       },
     ];
     this.bannerHeight.value = 100;
@@ -188,7 +385,9 @@ const Right = () => {
         }
       `}</style>
       <fieldset className="border px-2 py-1 mb-2">
-        <legend className="font-bold uppercase text-green-900">Bio</legend>
+        <legend className="font-bold uppercase text-green-900 text-xl">
+          Bio
+        </legend>
         {fields.name}
         {fields.imageUrl}
         {fields.phone}
@@ -196,9 +395,15 @@ const Right = () => {
         {fields.address}
         {fields.dob}
       </fieldset>
-      {fields.bannerHeight}
-      {fields.imageSize}
       {fields.education}
+      {fields.workHistory}
+      <fieldset className="border px-2 py-1 mb-2">
+        <legend className="font-bold uppercase text-green-900 text-xl">
+          Style
+        </legend>
+        {fields.bannerHeight}
+        {fields.imageSize}
+      </fieldset>
     </div>
   );
 };
@@ -233,7 +438,7 @@ const Template = () => {
         }
       `}</style>
       <div className="head bg-green-800 px-2 py-1 flex">
-        <h1 className="name text-xl">{values.name}</h1>
+        <div className="name text-xl">{values.name}</div>
         <div className="ml-auto">
           <div className="flex items-center justify-end">
             <i className="lar la-envelope mr-1"></i>
@@ -260,12 +465,28 @@ const Template = () => {
           <label className="text-xl font-semibold border-b-2 block">
             Education
           </label>
-          {values.education?.map(e => {
+          {values.education?.map((e) => {
             return (
               <div>
                 <div className="font-semibold">{e.school}</div>
                 <div className="">{e.degree}</div>
-                <div className=" text-gray-600">{e.period}</div>
+                <div className="italic text-gray-600">{e.period}</div>
+                <div className="">{e.description}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="work-history">
+          <label className="text-xl font-semibold border-b-2 block">
+            Employment history
+          </label>
+          {values.workHistory?.map((e) => {
+            return (
+              <div>
+                <div className="font-semibold">{e.company}</div>
+                <div className="">{e.position}</div>
+                <div className="italic text-gray-600">{e.period}</div>
+                <div className="">{e.description}</div>
               </div>
             );
           })}
